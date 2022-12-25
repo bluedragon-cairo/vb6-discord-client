@@ -302,14 +302,11 @@ Private Sub cmdSend_Click()
     Set Channel = channels(tvGuilds.SelectedItem.key)
     If Channel.ChannelType <> ChannelTypes.Text Then Exit Sub
     
-    Dim Http As New WinHttp.WinHttpRequest
-    EnableTLS Http
-    
-    On Error GoTo e
+    On Error GoTo E
     Channel.Send txtSendMessage.Text
     Exit Sub
     
-e:
+E:
     MsgBox "메시지를 보낼 수 없습니다. (HTTP " & Http.Status & ")", 16, "오류"
 End Sub
 
@@ -330,151 +327,16 @@ Private Sub Command1_Click()
     ws.Connect "wss://gateway.discord.gg/?v=10&encoding=json", "443", "", "", Headers
 End Sub
 
-
-
 Private Sub cmdToken_Click()
     frmAuthentication.Show 1, Me
 End Sub
 
 'disconnect from the websocket server
 Private Sub Command2_Click()
-
     If ws.readyState <> STATE_CLOSED Then
-        ''close' is a VB reserved keyword so we use 'disconnect'
         ws.Disconnect
     End If
-
 End Sub
-
-
-'send chat/data to the websocket server
-Private Sub Command3_Click()
-    Dim Bytes() As Byte
-    Dim aBinaryString As String
-
-    If ws.readyState = STATE_OPEN Then
-
-        If Len(Text3.Text) Then
-            ws.SendAdvanced Text3.Text, 1, True, False, True, False, False, False
-
-            AddListItem List1, "Myself: " & Text3
-            Text3 = ""
-        End If
-
-    Else
-        MsgBox "VBWebsocket is NOT connected", vbCritical
-    End If
-
-End Sub
-
-'start piesocket demo
-Private Sub Command4_Click()
-
-    Dim NewPiesocketClient As Form
-    
-    'spawn at least 4 clients the first time
-    Do
-        Set NewPiesocketClient = New frmPieSocket
-        NewPiesocketClient.Show , Me
-    Loop While Forms.Count < 5
-
-End Sub
-
-'echo server demo
-Private Sub Command5_Click()
-    BtcDemo = False
-    Text1 = "wss://echo.websocket.events/.ws"
-    Text4(0) = ""
-    Text4(1) = ""
-    Text5 = ""
-    Check2.Value = 0
-    Check1.Value = 0
-    MsgBox "All values for echo websocket demo server have been set. To try the demo please press connect.", vbInformation
-End Sub
-
-
-'start btc ticker
-Private Sub Command6_Click()
-
-    'already running
-    If BtcDemo = True Then Exit Sub
-
-    BtcDemo = True
-
-    Text1 = "wss://ws-feed.pro.coinbase.com/"
-
-    'make sure all values are clear
-
-    'no headers
-    Text4(0) = ""
-    Text4(1) = ""
-
-    'no sub protocol
-    Text5 = ""
-
-    'no compression
-    Check2.Value = 0
-
-    'send as text
-    Check1.Value = 0
-
-    'hit the connect button
-    Command1_Click
-
-End Sub
-
-'stop btc demo
-Private Sub Command7_Click()
-
-    BtcDemo = False
-
-    List3.List(0) = "BTC SELL:"
-    List3.List(1) = "BTC BUY:"
-
-    'hit disconnect button
-    Command2_Click
-
-End Sub
-
-
-'view the help file
-Private Sub Command8_Click()
-
-    Shell "explorer " & """" & App.Path & "\HELP.html" & """", vbNormalFocus
-
-End Sub
-
-'visit forum post regarding vbwebsocket
-Private Sub Command9_Click()
-
-    Shell "explorer " & """" & "https://www.vbforums.com/showthread.php?892835-VB6-Visual-Basic-6-Client-Websocket-Control" & """", vbNormalFocus
-
-End Sub
-
-'ping the server
-Private Sub Command10_Click()
-    If ws.readyState = STATE_OPEN Then
-        AddListItem List1, "Me: Ping"
-        ws.Ping
-    End If
-End Sub
-
-
-'open the rfc for webwocket protocol
-Private Sub Command11_Click()
-
-    Dim FSO As Object
-
-    Set FSO = CreateObject("scripting.filesystemobject")
-    If FSO.FileExists(App.Path & "\rfc6455.txt") Then
-        Shell "explorer " & """" & App.Path & "\rfc6455.txt" & """", vbNormalFocus
-    Else
-        Shell "explorer " & """" & "https://www.rfc-editor.org/rfc/rfc6455.txt" & """", vbNormalFocus
-    End If
-End Sub
-
-
-
 
 Private Sub Form_Load()
     Load frmLogs
@@ -501,38 +363,6 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
 
 End Sub
 
-'show freedom!
-Private Sub Label4_Click()
-    Me.Width = 17325
-End Sub
-
-'help ukraine
-Private Sub Label7_Click()
-    Shell "explorer " & """" & "https://www.timeout.com/news/22-ways-you-can-help-the-people-of-ukraine-right-now-032322" & """"
-End Sub
-
-'==================================================================
-' misc GUI functions
-'==================================================================
-
-'set list1 tooltip to selected text
-Private Sub List1_Click()
-
-    If List1.ListIndex <> -1 Then
-        List1.ToolTipText = List1.List(List1.ListIndex)
-    End If
-
-End Sub
-
-'set list2 tooltip to selected text
-Private Sub List2_Click()
-    With List2
-        If .ListIndex <> -1 Then
-            .ToolTipText = .List(.ListIndex)
-        End If
-    End With
-End Sub
-
 'change port automatically depending on url
 Private Sub Text1_Change()
     If Len(Text1) > 3 Then
@@ -549,7 +379,6 @@ End Sub
 Private Sub Text3_KeyPress(KeyAscii As Integer)
     If KeyAscii = 13 Then
         KeyAscii = 0  'eliminates the windows DING sound
-        Command3_Click
     End If
 End Sub
 
@@ -581,26 +410,26 @@ End Sub
 Private Sub tvGuilds_Click()
     On Error Resume Next
     Dim Channel As Channel
-    Dim msg
+    Dim Msg
     If Not channels.Exists(tvGuilds.SelectedItem.key) Then Exit Sub
     Set Channel = channels(tvGuilds.SelectedItem.key)
     If Channel.ChannelType <> ChannelTypes.Text Then Exit Sub
     wbChat.Document.parentWindow.execScript "document.getElementById('message-container').innerHTML = '';"
     If Channel.Messages.Count = 0 Then
         'On Error GoTo fetchError
-        For Each msg In Request("GET", "https://discord.com/api/v10/channels/" & Channel.ID & "/messages")
-            Channel.Messages.Add CStr(msg("id")), msg
-        Next msg
+        For Each Msg In Request("GET", "https://discord.com/api/v10/channels/" & Channel.ID & "/messages")
+            Channel.Messages.Add CStr(Msg("id")), Msg
+        Next Msg
     End If
     
     Log "메시지 " & Channel.Messages.Count & "개가 있습니다"
     
-    For Each msg In Channel.Messages.Items
-        wbChat.Document.parentWindow.execScript "createMessage(" & JSON.toString(msg) & ");"
-        If Not CStr(users.Exists(msg("author")("id"))) And Not IsNull(msg("webhook_id")) Then
-            users.Add CStr(msg("author")("id")), msg("author")
+    For Each Msg In Channel.Messages.Items
+        wbChat.Document.parentWindow.execScript "createMessage(" & JSON.toString(Msg) & ");"
+        If Not CStr(users.Exists(Msg("author")("id"))) And Not IsNull(Msg("webhook_id")) Then
+            users.Add CStr(Msg("author")("id")), Msg("author")
         End If
-    Next msg
+    Next Msg
     
     Exit Sub
     
@@ -642,14 +471,14 @@ End Sub
 
 
 
-Private Sub ws_OnMessage(ByVal msg As Variant, ByVal OpCode As WebsocketOpCode)
+Private Sub ws_OnMessage(ByVal Msg As Variant, ByVal OpCode As WebsocketOpCode)
     'if coinbase demo not active proceed as normal
     Dim evt As Dictionary
     Select Case OpCode
         Case opText     'normal text string
-            AddListItem List1, "Server: " & msg
+            AddListItem List1, "Server: " & Msg
             
-            Set evt = JSON.parse(CStr(msg))
+            Set evt = JSON.parse(CStr(Msg))
             Select Case CInt(evt("op"))
                 Case 10 'hello
                     Log "게이트웨이 연결 완료!"
@@ -698,7 +527,7 @@ Private Sub ws_OnMessage(ByVal msg As Variant, ByVal OpCode As WebsocketOpCode)
                             Dim guildChannels As Object
                             Set guildChannels = evt("d")("channels")
                             For i% = 1 To guildChannels.Count
-                                If Len(CStr(guildChannels(i)("parent_id"))) = 0 Then
+                                If Len(CStr(filter(guildChannels(i)("parent_id"), ""))) = 0 Then
                                     If guildChannels(i)("type") = 4 Then
                                         tvGuilds.Nodes.Add CStr(evt("d")("id")), tvwChild, CStr(guildChannels(i)("id")), "[ " & guildChannels(i)("name") & " ]"
                                     Else
@@ -708,7 +537,7 @@ Private Sub ws_OnMessage(ByVal msg As Variant, ByVal OpCode As WebsocketOpCode)
                                 channels.Add CStr(guildChannels(i)("id")), SetupChannel(guildChannels(i))
                             Next i
                             For i% = 1 To guildChannels.Count
-                                If Len(CStr(guildChannels(i)("parent_id"))) > 0 Then
+                                If Len(CStr(filter(guildChannels(i)("parent_id"), ""))) > 0 Then
                                     tvGuilds.Nodes.Add CStr(guildChannels(i)("parent_id")), tvwChild, CStr(guildChannels(i)("id")), guildChannels(i)("name")
                                 End If
                             Next i
@@ -721,13 +550,17 @@ Private Sub ws_OnMessage(ByVal msg As Variant, ByVal OpCode As WebsocketOpCode)
                             If Not users.Exists(CStr(message("author")("id"))) And Not IsNull(message("webhook_id")) Then
                                 users.Add CStr(message("author")("id")), message("author")
                             End If
+                            Dim noti As New frmNotification
+                            noti.Caption = message("author")("username") & "이(가) 메시지를 보냈습니다"
+                            noti.lblHeader.Caption = "[" & channels(CStr(message("channel_id"))).Name & "]"
+                            noti.txtBody.Text = message("content")
                     End Select
                 Case 11
                     Log "하트비트가 정상적으로 전송되었습니다"
             End Select
         Case opBinary  'handle binary data
 
-            If VarType(msg) = vbArray + vbByte Then
+            If VarType(Msg) = vbArray + vbByte Then
                 AddListItem List1, "Server: Binary data recieved"
                 'do something with binary data
             Else
@@ -753,48 +586,6 @@ Private Sub ws_OnReConnect(ByVal newURI As String)
     Text1 = newURI
     AddListItem List2, "The server is redirecting the connection to " & newURI
 End Sub
-
-
-'====================================================================
-'helper functions
-'====================================================================
-
-'display the BTC price for coinbase demo
-Sub ShowBtcPrice(ByVal strData As String)
-    '    "type":"ticker",
-    '    "trade_id":20153558,
-    '    "sequence":3262786978,
-    '    "time":"2017-09-02T17:05:49.250000Z",
-    '    "product_id":"BTC-USD",
-    '    "price":"4388.01000000",
-    '    "side":"buy", // Taker side
-    '    "last_size":"0.03000000",
-    '    "best_bid":"4388",
-    '    "best_ask":"4388.01"
-
-    Dim Pos As Long
-    Dim Last As Long
-    Dim Price As String
-
-    'extract the price
-    Pos = InStr(strData, """price"":")
-    If Pos Then
-        Pos = Pos + 9
-        Last = InStr(Pos + 1, strData, """")    'look for end quote
-        If Last Then
-            Price = Mid$(strData, Pos, Last - Pos)
-
-            If InStr(strData, """side"":""buy""") Then
-                List3.List(1) = "BTC BUY: " & Price
-            Else
-                List3.List(0) = "BTC SELL: " & Price
-            End If
-        End If
-    End If
-
-
-End Sub
-
 
 'parse server address from server URL
 Function ParseServerAddress(ByVal sUri As String) As String
