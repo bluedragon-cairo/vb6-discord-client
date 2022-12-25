@@ -57,7 +57,7 @@ Function EscapeHTML(ByVal str As String)
     EscapeHTML = Replace(Replace(Replace(Replace(str, "&", "&amp;"), """", "&quot;"), "<", "&lt;"), ">", "&gt;")
 End Function
 
-Function Request(method As String, url As String, Optional body As String)
+Function Request(method As String, url As String, Optional body As String) As Object
     Dim Http As New WinHttp.WinHttpRequest
     EnableTLS Http
     
@@ -76,6 +76,12 @@ Function Request(method As String, url As String, Optional body As String)
         Exit Function
     End If
     
-    Request = p
+    Set Request = p
+End Function
+
+Function SetupChannel(raw As Dictionary) As Channel
+    Dim ch As New Channel
+    ch.Initialize raw
+    Set SetupChannel = ch
 End Function
 

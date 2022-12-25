@@ -298,22 +298,19 @@ End Sub
 
 Private Sub cmdSend_Click()
     If Not channels.Exists(tvGuilds.SelectedItem.key) Then Exit Sub
-    If channels(tvGuilds.SelectedItem.key)("type") <> 0 Then Exit Sub
+    Dim Channel As Channel
+    Set Channel = channels(tvGuilds.SelectedItem.key)
+    If Channel.ChannelType <> ChannelTypes.Text Then Exit Sub
     
     Dim Http As New WinHttp.WinHttpRequest
     EnableTLS Http
     
-    Http.Open "POST", "https://discord.com/api/v10/channels/" & tvGuilds.SelectedItem.key & "/messages", True
-    Http.SetRequestHeader "Content-Type", "application/json"
-    Http.SetRequestHeader "Authorization", Token
-    Http.SetRequestHeader "User-Agent", "My XML App V1.0"
-    Http.Send "{""content"":""" & Escape(txtSendMessage.Text) & """}"
-    Http.WaitForResponse 60
+    On Error GoTo e
+    Channel.Send txtSendMessage.Text
+    Exit Sub
     
-    If Http.Status >= 400 Then
-        MsgBox "메시지를 보낼 수 없습니다. (HTTP " & Http.Status & ")", 16, "오류"
-        Exit Sub
-    End If
+e:
+    MsgBox "메시지를 보낼 수 없습니다. (HTTP " & Http.Status & ")", 16, "오류"
 End Sub
 
 'connect to the websocket server
@@ -486,7 +483,7 @@ Private Sub Form_Load()
     SetFont Me
     Me.Caption = App.Title
     wbChat.Navigate "about:blank"
-    wbChat.Document.parentWindow.execScript "window.createMessage = function createMessage(sender, content) { document.getElementById('message-container').innerHTML += '<table><tr><td rowspan=2><img /></td><td>' + sender.username + '</td></tr><tr><td>' + content + '</td></tr></table>'; }"
+    wbChat.Document.parentWindow.execScript "window.createMessage = function createMessage(message) { document.getElementById('message-container').innerHTML += '<table><tr><td rowspan=2><img src=""https://cdn.discordapp.com/avatars/' + message.author.id + '/' + message.author.avatar + '.png?size=64"" width=48px height=48px /></td><td>' + message.author.username + ' <small><font color=#f0f0f0>0:00</font></small></td></tr><tr><td>' + message.content + '</td></tr></table>'; }"
     wbChat.Document.parentWindow.execScript "window.onload = function() { document.body.style.backgroundColor = 'rgb(41, 57, 69)'; document.body.style.color = 'white'; document.body.style.fontFamily = '돋움,Dotum'; document.body.innerHTML = '<div id=message-container></div>'; }"
 End Sub
 
@@ -583,43 +580,32 @@ End Sub
 
 Private Sub tvGuilds_Click()
     On Error Resume Next
-    Dim Channel As Dictionary
+    Dim Channel As Channel
     Dim msg
     If Not channels.Exists(tvGuilds.SelectedItem.key) Then Exit Sub
     Set Channel = channels(tvGuilds.SelectedItem.key)
-    If Channel("type") <> 0 Then Exit Sub
+    If Channel.ChannelType <> ChannelTypes.Text Then Exit Sub
     wbChat.Document.parentWindow.execScript "document.getElementById('message-container').innerHTML = '';"
-    If Channel("messages").Count = 0 Then
-        Dim Http As New WinHttp.WinHttpRequest
-        EnableTLS Http
-        
-        Http.Open "GET", "https://discord.com/api/v10/channels/" & Channel("id") & "/messages", True
-        Http.SetRequestHeader "Content-Type", "application/json"
-        Http.SetRequestHeader "Authorization", Token
-        Http.SetRequestHeader "User-Agent", "My XML App V1.0"
-        Http.Send
-        Http.WaitForResponse 60
-        
-        If Http.Status >= 400 Then
-            MsgBox "메시지를 불러올 수 없습니다.", 16, "오류"
-            Exit Sub
-        End If
-        
-        Dim p As Object
-        Set p = JSON.parse("{""messages"":" & CStr(Http.ResponseText) & "}")
-        For Each msg In p("messages")
-            Channel("messages").Add CStr(msg("id")), msg
+    If Channel.Messages.Count = 0 Then
+        'On Error GoTo fetchError
+        For Each msg In Request("GET", "https://discord.com/api/v10/channels/" & Channel.ID & "/messages")
+            Channel.Messages.Add CStr(msg("id")), msg
         Next msg
     End If
     
-    Log "메시지 " & Channel("messages").Count & "개가 있습니다"
+    Log "메시지 " & Channel.Messages.Count & "개가 있습니다"
     
-    For Each msg In Channel("messages").Items
-        wbChat.Document.parentWindow.execScript "createMessage(" & JSON.toString(msg("author")) & ", """ & EscapeHTML(Escape(msg("content"))) & """);"
+    For Each msg In Channel.Messages.Items
+        wbChat.Document.parentWindow.execScript "createMessage(" & JSON.toString(msg) & ");"
         If Not CStr(users.Exists(msg("author")("id"))) And Not IsNull(msg("webhook_id")) Then
             users.Add CStr(msg("author")("id")), msg("author")
         End If
     Next msg
+    
+    Exit Sub
+    
+fetchError:
+    MsgBox "메시지를 불러올 수 없습니다.", 16, "오류"
 End Sub
 
 '==================================================================
@@ -719,8 +705,7 @@ Private Sub ws_OnMessage(ByVal msg As Variant, ByVal OpCode As WebsocketOpCode)
                                         tvGuilds.Nodes.Add CStr(evt("d")("id")), tvwChild, CStr(guildChannels(i)("id")), guildChannels(i)("name")
                                     End If
                                 End If
-                                channels.Add CStr(guildChannels(i)("id")), guildChannels(i)
-                                channels(CStr(guildChannels(i)("id"))).Add "messages", New Dictionary
+                                channels.Add CStr(guildChannels(i)("id")), SetupChannel(guildChannels(i))
                             Next i
                             For i% = 1 To guildChannels.Count
                                 If Len(CStr(guildChannels(i)("parent_id"))) > 0 Then
@@ -731,8 +716,8 @@ Private Sub ws_OnMessage(ByVal msg As Variant, ByVal OpCode As WebsocketOpCode)
                             Log "새로운 메시지가 왔습니다."
                             Dim message As Dictionary
                             Set message = evt("d")
-                            channels(CStr(message("channel_id")))("messages").Add CStr(message("id")), message
-                            wbChat.Document.parentWindow.execScript "createMessage(" & JSON.toString(message("author")) & ", """ & EscapeHTML(Escape(message("content"))) & """);"
+                            channels(CStr(message("channel_id"))).Messages.Add CStr(message("id")), message
+                            wbChat.Document.parentWindow.execScript "createMessage(" & JSON.toString(message) & ");"
                             If Not users.Exists(CStr(message("author")("id"))) And Not IsNull(message("webhook_id")) Then
                                 users.Add CStr(message("author")("id")), message("author")
                             End If

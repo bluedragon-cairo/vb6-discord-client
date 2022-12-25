@@ -23,7 +23,8 @@ End Enum
 
 Public Name As String
 Public ID As String
-Public Threads As New Collection
+Public Threads As New Dictionary
+Public Messages As New Dictionary
 Public ChannelType As ChannelTypes
 Public ParentID As String
 Public Parent As Channel
