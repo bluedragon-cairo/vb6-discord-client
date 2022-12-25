@@ -177,10 +177,10 @@ Begin VB.Form frmMain
       Top             =   2985
       Width           =   1920
    End
-   Begin Project1.Websocket ws 
+   Begin VB6_Discord.Websocket ws 
       Height          =   465
       Left            =   6240
-      Top             =   3960
+      Top             =   4080
       Width           =   1590
       _ExtentX        =   2805
       _ExtentY        =   820

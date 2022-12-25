@@ -10,7 +10,6 @@ Class=cAsyncSocket; cAsyncSocket.cls
 Class=cTlsSocket; cTlsSocket.cls
 Class=cZipArchive; cZipArchive.cls
 UserControl=Websocket.ctl
-RelatedDoc=changelog.txt
 Form=frmAuthentication.frm
 Module=JSON; JSON.bas
 Module=Tools; Tools.bas
