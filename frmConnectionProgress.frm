@@ -21,8 +21,8 @@ Begin VB.Form frmConnectionProgress
       Left            =   960
       TabIndex        =   0
       Top             =   840
-      Width           =   4935
-      _ExtentX        =   8705
+      Width           =   4695
+      _ExtentX        =   8281
       _ExtentY        =   423
       _Version        =   327682
       Appearance      =   0
@@ -52,11 +52,11 @@ Attribute VB_Exposed = False
 Private Const WM_USER = &H400
 Private Const PBM_SETMARQUEE = WM_USER + 10
 Private Const GWL_STYLE = (-16)
-Private Declare Function GetWindowLong Lib "user32" Alias "GetWindowLongA" (ByVal hwnd As Long, ByVal nIndex As Long) As Long
-Private Declare Function SetWindowLong Lib "user32" Alias "SetWindowLongA" (ByVal hwnd As Long, ByVal nIndex As Long, ByVal dwNewLong As Long) As Long
-Private Declare Function SendMessage Lib "user32" Alias "SendMessageA" (ByVal hwnd As Long, ByVal wMsg As Long, ByVal wParam As Long, ByVal lParam As Any) As Long
+Private Declare Function GetWindowLong Lib "user32" Alias "GetWindowLongA" (ByVal hWnd As Long, ByVal nIndex As Long) As Long
+Private Declare Function SetWindowLong Lib "user32" Alias "SetWindowLongA" (ByVal hWnd As Long, ByVal nIndex As Long, ByVal dwNewLong As Long) As Long
+Private Declare Function SendMessage Lib "user32" Alias "SendMessageA" (ByVal hWnd As Long, ByVal wMsg As Long, ByVal wParam As Long, ByVal lParam As Any) As Long
 
 Private Sub Form_Load()
-    SetWindowLong pbStatus.hwnd, GWL_STYLE, GetWindowLong(pbStatus.hwnd, GWL_STYLE) Or PBM_SETMARQUEE
-    SendMessage pbStatus.hwnd, PBM_SETMARQUEE, 1, CLng(20)
+    SetWindowLong pbStatus.hWnd, GWL_STYLE, GetWindowLong(pbStatus.hWnd, GWL_STYLE) Or PBM_SETMARQUEE
+    SendMessage pbStatus.hWnd, PBM_SETMARQUEE, 1, CLng(20)
 End Sub

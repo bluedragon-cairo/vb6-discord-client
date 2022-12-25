@@ -20,7 +20,7 @@ Sub Pause(ByVal Delay As Single)
 End Sub
 
 Function filter(ByVal X, ByVal Y)
-    If X = 0 Then
+    If X = 0 Or IsNull(X) Then
         filter = Y
     Else
         filter = X
@@ -48,3 +48,34 @@ End Sub
 Sub Log(ByVal data)
     frmLogs.lvLogs.AddItem data
 End Sub
+
+Function Escape(ByVal str As String)
+    Escape = Replace(Replace(str, """", "\"""), "\", "\\")
+End Function
+
+Function EscapeHTML(ByVal str As String)
+    EscapeHTML = Replace(Replace(Replace(Replace(str, "&", "&amp;"), """", "&quot;"), "<", "&lt;"), ">", "&gt;")
+End Function
+
+Function Request(method As String, url As String, Optional body As String)
+    Dim Http As New WinHttp.WinHttpRequest
+    EnableTLS Http
+    
+    Http.Open method, url, True
+    Http.SetRequestHeader "Content-Type", "application/json"
+    Http.SetRequestHeader "Authorization", Token
+    Http.SetRequestHeader "User-Agent", "My XML App V1.0"
+    Http.Send body
+    Http.WaitForResponse 60
+    
+    Dim p As Object
+    Set p = JSON.parse(CStr(Http.ResponseText))
+    
+    If Http.Status >= 400 Then
+        Err.Raise vbObjectError + Http.Status, , p("message")
+        Exit Function
+    End If
+    
+    Request = p
+End Function
+

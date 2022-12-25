@@ -3,20 +3,94 @@ Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
 Object = "{EAB22AC0-30C1-11CF-A7EB-0000C05BAE0B}#1.1#0"; "shdocvw.dll"
 Begin VB.Form frmMain 
    Caption         =   "VBWebsocket Example "
-   ClientHeight    =   8040
+   ClientHeight    =   4395
    ClientLeft      =   120
    ClientTop       =   465
-   ClientWidth     =   11325
+   ClientWidth     =   9630
    Icon            =   "frmMain.frx":0000
    LinkTopic       =   "frmMain"
    MaxButton       =   0   'False
-   ScaleHeight     =   8040
-   ScaleWidth      =   11325
+   ScaleHeight     =   4395
+   ScaleWidth      =   9630
    StartUpPosition =   3  'Windows 기본값
+   Begin ComctlLib.TreeView tvGuilds 
+      Height          =   3735
+      Left            =   120
+      TabIndex        =   11
+      Top             =   480
+      Width           =   1935
+      _ExtentX        =   3413
+      _ExtentY        =   6588
+      _Version        =   327682
+      HideSelection   =   0   'False
+      Indentation     =   471
+      LabelEdit       =   1
+      LineStyle       =   1
+      Style           =   6
+      Appearance      =   1
+   End
+   Begin ComctlLib.TabStrip TabStrip1 
+      Height          =   975
+      Left            =   120
+      TabIndex        =   16
+      Top             =   120
+      Width           =   1935
+      _ExtentX        =   3413
+      _ExtentY        =   1720
+      _Version        =   327682
+      BeginProperty Tabs {0713E432-850A-101B-AFC0-4210102A8DA7} 
+         NumTabs         =   2
+         BeginProperty Tab1 {0713F341-850A-101B-AFC0-4210102A8DA7} 
+            Caption         =   "친구"
+            Key             =   ""
+            Object.Tag             =   ""
+            ImageVarType    =   2
+         EndProperty
+         BeginProperty Tab2 {0713F341-850A-101B-AFC0-4210102A8DA7} 
+            Caption         =   "채팅"
+            Key             =   ""
+            Object.Tag             =   ""
+            ImageVarType    =   2
+         EndProperty
+      EndProperty
+   End
+   Begin VB.CommandButton cmdSend 
+      Caption         =   ">>"
+      Height          =   375
+      Left            =   7320
+      TabIndex        =   15
+      Top             =   3840
+      Width           =   615
+   End
+   Begin VB.TextBox txtSendMessage 
+      Height          =   375
+      Left            =   2640
+      MaxLength       =   1999
+      TabIndex        =   14
+      Top             =   3840
+      Width           =   4575
+   End
+   Begin VB.CommandButton cmdAttach 
+      Caption         =   "+"
+      BeginProperty Font 
+         Name            =   "굴림"
+         Size            =   14.25
+         Charset         =   129
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      Height          =   375
+      Left            =   2160
+      TabIndex        =   13
+      Top             =   3840
+      Width           =   375
+   End
    Begin SHDocVwCtl.WebBrowser wbChat 
       Height          =   3615
       Left            =   2160
-      TabIndex        =   23
+      TabIndex        =   12
       Top             =   120
       Width           =   5775
       ExtentX         =   10186
@@ -38,87 +112,32 @@ Begin VB.Form frmMain
       ViewID          =   "{0057D0E0-3573-11CF-AE69-08002B2E1262}"
       Location        =   "http:///"
    End
-   Begin ComctlLib.TreeView tvGuilds 
-      Height          =   3615
-      Left            =   120
-      TabIndex        =   22
-      Top             =   120
-      Width           =   1935
-      _ExtentX        =   3413
-      _ExtentY        =   6376
-      _Version        =   327682
-      HideSelection   =   0   'False
-      Indentation     =   471
-      LabelEdit       =   1
-      LineStyle       =   1
-      Style           =   6
-      Appearance      =   1
-   End
    Begin VB.CommandButton cmdToken 
       Caption         =   "토큰"
       Height          =   375
-      Left            =   6480
-      TabIndex        =   21
-      Top             =   7440
-      Width           =   1575
+      Left            =   8040
+      TabIndex        =   10
+      Top             =   720
+      Width           =   1455
    End
    Begin VB.Timer timHeartbeat 
       Enabled         =   0   'False
       Interval        =   45000
-      Left            =   5280
-      Top             =   7200
+      Left            =   8520
+      Top             =   2280
    End
    Begin VB.CommandButton Command10 
       Caption         =   "Ping Server"
       Height          =   540
-      Left            =   6240
-      TabIndex        =   17
-      Top             =   6120
+      Left            =   9840
+      TabIndex        =   6
+      Top             =   1680
       Width           =   1440
-   End
-   Begin VB.CheckBox Check2 
-      Caption         =   "Use Compression"
-      Height          =   315
-      Left            =   8520
-      TabIndex        =   16
-      Top             =   2520
-      Width           =   1815
-   End
-   Begin VB.CheckBox Check1 
-      Caption         =   "Send Data As Binary"
-      Height          =   315
-      Left            =   3600
-      TabIndex        =   15
-      Top             =   6480
-      Width           =   1740
-   End
-   Begin VB.TextBox Text4 
-      Height          =   390
-      Index           =   1
-      Left            =   8475
-      TabIndex        =   14
-      Top             =   1125
-      Width           =   2490
-   End
-   Begin VB.TextBox Text5 
-      Height          =   390
-      Left            =   8475
-      TabIndex        =   12
-      Top             =   2100
-      Width           =   2490
-   End
-   Begin VB.TextBox Text4 
-      Height          =   390
-      Index           =   0
-      Left            =   8475
-      TabIndex        =   10
-      Top             =   600
-      Width           =   2490
    End
    Begin VB.ListBox List2 
       Height          =   780
       Left            =   8280
-      TabIndex        =   9
+      TabIndex        =   5
       Top             =   7080
       Width           =   2895
    End
@@ -126,61 +145,45 @@ Begin VB.Form frmMain
       Caption         =   "Send"
       Height          =   540
       Left            =   10080
-      TabIndex        =   8
+      TabIndex        =   4
       Top             =   6480
       Width           =   1065
    End
    Begin VB.TextBox Text3 
       Height          =   465
       Left            =   8280
-      TabIndex        =   7
+      TabIndex        =   3
       Text            =   "Hello World"
       Top             =   6480
       Width           =   1665
    End
    Begin VB.ListBox List1 
       Height          =   2580
-      Left            =   8280
-      TabIndex        =   6
-      Top             =   3840
+      Left            =   3240
+      TabIndex        =   2
+      Top             =   6600
       Width           =   2865
    End
    Begin VB.CommandButton Command2 
       Caption         =   "Disconnect"
       Height          =   540
-      Left            =   6240
-      TabIndex        =   5
-      Top             =   5400
+      Left            =   9720
+      TabIndex        =   1
+      Top             =   960
       Width           =   1440
-   End
-   Begin VB.TextBox Text2 
-      Height          =   390
-      Left            =   8760
-      TabIndex        =   4
-      Text            =   "443"
-      Top             =   3345
-      Width           =   690
    End
    Begin VB.CommandButton Command1 
       Caption         =   "Connect"
       Height          =   540
-      Left            =   6240
-      TabIndex        =   1
-      Top             =   4680
-      Width           =   1440
-   End
-   Begin VB.TextBox Text1 
-      Height          =   390
-      Left            =   9300
+      Left            =   8040
       TabIndex        =   0
-      Text            =   "wss://gateway.discord.gg/?v=10&encoding=json"
-      Top             =   2985
-      Width           =   1920
+      Top             =   120
+      Width           =   1440
    End
    Begin VB6_Discord.Websocket ws 
       Height          =   465
-      Left            =   6240
-      Top             =   4080
+      Left            =   8040
+      Top             =   1200
       Width           =   1590
       _ExtentX        =   2805
       _ExtentY        =   820
@@ -202,45 +205,9 @@ Begin VB.Form frmMain
       Left            =   12225
       MouseIcon       =   "frmMain.frx":030A
       MousePointer    =   99  '사용자 정의
-      TabIndex        =   20
+      TabIndex        =   9
       Top             =   3975
       Width           =   3765
-   End
-   Begin VB.Label Label6 
-      BackStyle       =   0  '투명
-      Caption         =   "Sub Protocols:"
-      Height          =   315
-      Left            =   8475
-      TabIndex        =   13
-      Top             =   1800
-      Width           =   1665
-   End
-   Begin VB.Label Label5 
-      BackStyle       =   0  '투명
-      Caption         =   "Extra Headers:"
-      Height          =   315
-      Left            =   8475
-      TabIndex        =   11
-      Top             =   300
-      Width           =   1665
-   End
-   Begin VB.Label Label2 
-      BackStyle       =   0  '투명
-      Caption         =   "Port:"
-      Height          =   315
-      Left            =   8310
-      TabIndex        =   3
-      Top             =   3420
-      Width           =   540
-   End
-   Begin VB.Label Label1 
-      BackStyle       =   0  '투명
-      Caption         =   "Websocket Url:"
-      Height          =   390
-      Left            =   8025
-      TabIndex        =   2
-      Top             =   3060
-      Width           =   1590
    End
    Begin VB.Label lblUKRAINE 
       Alignment       =   2  '가운데 맞춤
@@ -259,7 +226,7 @@ Begin VB.Form frmMain
       Height          =   1815
       Index           =   0
       Left            =   11475
-      TabIndex        =   18
+      TabIndex        =   7
       Top             =   225
       Width           =   5415
    End
@@ -280,7 +247,7 @@ Begin VB.Form frmMain
       Height          =   1815
       Index           =   1
       Left            =   11475
-      TabIndex        =   19
+      TabIndex        =   8
       Top             =   2025
       Width           =   5415
    End
@@ -319,107 +286,51 @@ Dim channels As New Dictionary
 Dim guilds As New Dictionary
 
 Sub ResumeDiscord()
-    Dim Headers As New Collection    'collection of extra headers
-    Dim X As Long
-
-    'if not disconnected, then disconnect
+    Dim Headers As New Collection
     If ws.readyState <> STATE_CLOSED Then
         ws.Disconnect
     End If
-
-    'see if we need to add an additional header
-    'the headers option in Connect() takes a collection of header strings
-    'note: DO NOT append vbcrlf to the header line, the websocket control does any formatting
-    'You can add multiple headers lines to the collection
-    For X = 0 To Text4.Count - 1
-        If Len(Text4(X).Text) Then
-            Headers.Add Text4(X).Text
-        End If
-    Next X
-    'this would also work
-    'Headers.Add "Content-Type: application/json"
-    'or
-    'Headers.Add Text4(0).Text
-    'Headers.Add Text4(1).Text
-
-
-    'use compression?
-    'If you plan on using compression at anytime during sends
-    'you should set this before connecting so that the proper
-    'extension is negotiated in the initial headers.
-    'NOTE: VBWebsocket handles all compression and decompression internally
-    ws.UseCompression = CBool(Check2.Value)
-
-
-    'set chunk size for sending large data, default is 4kb, max 16kb recommended
-    'only set this if you need to send larger data packets such as binary 1 gigabyte sends in one frame or something
-    'max is  2,147,483,647 (2.1 Gb), this should be in evenly divisble numbers (modulo) of 1024
-    'Note: winsock frame sizes on older windows was 4kb on most windows 10 systems it is 16kb
-    ws.ChunkSize = 4096
-
-    AddListItem List2, "Connecting to address " & ParseServerAddress(ResumeURL) & " on port " & Text2
     
     Resuming = True
-    
-    'connect (address, port, protocols, extensions, headers)
+    Log ResumeURL & "으로 다시 연결합니다..."
     ws.Connect ResumeURL, Text2, Text5, "", Headers
+End Sub
 
-    'ws.SendAdvanced "{""op"":6,""d"":{""token"":""" & Token & """,""session_id"":""" & sessionID & """,""seq"":" & sequence & "}}", 1, True, False, True, False, False, False
+Private Sub cmdSend_Click()
+    If Not channels.Exists(tvGuilds.SelectedItem.key) Then Exit Sub
+    If channels(tvGuilds.SelectedItem.key)("type") <> 0 Then Exit Sub
+    
+    Dim Http As New WinHttp.WinHttpRequest
+    EnableTLS Http
+    
+    Http.Open "POST", "https://discord.com/api/v10/channels/" & tvGuilds.SelectedItem.key & "/messages", True
+    Http.SetRequestHeader "Content-Type", "application/json"
+    Http.SetRequestHeader "Authorization", Token
+    Http.SetRequestHeader "User-Agent", "My XML App V1.0"
+    Http.Send "{""content"":""" & Escape(txtSendMessage.Text) & """}"
+    Http.WaitForResponse 60
+    
+    If Http.Status >= 400 Then
+        MsgBox "메시지를 보낼 수 없습니다. (HTTP " & Http.Status & ")", 16, "오류"
+        Exit Sub
+    End If
 End Sub
 
 'connect to the websocket server
 Private Sub Command1_Click()
-
-    Dim Headers As New Collection    'collection of extra headers
-    Dim X As Long
-
-
-    If Len(Text1) < 8 Then
-        MsgBox "Please enter a valid websocket address!", vbCritical
-        Exit Sub
-    End If
-
-    'if not disconnected, then disconnect
+    Dim Headers As New Collection
+    
     If ws.readyState <> STATE_CLOSED Then
         ws.Disconnect
     End If
-
-    'see if we need to add an additional header
-    'the headers option in Connect() takes a collection of header strings
-    'note: DO NOT append vbcrlf to the header line, the websocket control does any formatting
-    'You can add multiple headers lines to the collection
-    For X = 0 To Text4.Count - 1
-        If Len(Text4(X).Text) Then
-            Headers.Add Text4(X).Text
-        End If
-    Next X
-    'this would also work
-    'Headers.Add "Content-Type: application/json"
-    'or
-    'Headers.Add Text4(0).Text
-    'Headers.Add Text4(1).Text
-
-
-    'use compression?
-    'If you plan on using compression at anytime during sends
-    'you should set this before connecting so that the proper
-    'extension is negotiated in the initial headers.
-    'NOTE: VBWebsocket handles all compression and decompression internally
-    ws.UseCompression = CBool(Check2.Value)
-
-
-    'set chunk size for sending large data, default is 4kb, max 16kb recommended
-    'only set this if you need to send larger data packets such as binary 1 gigabyte sends in one frame or something
-    'max is  2,147,483,647 (2.1 Gb), this should be in evenly divisble numbers (modulo) of 1024
-    'Note: winsock frame sizes on older windows was 4kb on most windows 10 systems it is 16kb
+    
+    ws.UseCompression = False
     ws.ChunkSize = 4096
 
-    Log Text1 & "에 연결하는 중..."
+    Log "wss://gateway.discord.gg/?v=10&encoding=json" & "에 연결하는 중..."
     frmConnectionProgress.Show '1, Me
     frmConnectionProgress.lblStatus.Caption = "디스코드 서버에 연결하는 중..."
-    'connect (address, port, protocols, extensions, headers)
-    ws.Connect Text1, Text2, Text5, "", Headers
-
+    ws.Connect "wss://gateway.discord.gg/?v=10&encoding=json", "443", "", "", Headers
 End Sub
 
 
@@ -447,29 +358,10 @@ Private Sub Command3_Click()
     If ws.readyState = STATE_OPEN Then
 
         If Len(Text3.Text) Then
-            'send as text?
-            If Check1.Value Then    'send as binary
-                'convert unicode string to ansi byte array
-                Bytes = StrConv(Text3, vbFromUnicode)
-
-                'ws.Send Bytes
-
-                'here is how to use the new feature to send a string as binary
-                'note: The string must be binary, such as a string loaded from a file... not vb's utf16 encoded strings
-                aBinaryString = Bytes
-                ws.Send aBinaryString, True
-
-            Else
-                'default is text (aka string)
-                'ws.Send Text3.Text
-                 
-                'here is how to use the new SendAdvanced() function, you could also use opText instead of 1
-                 ws.SendAdvanced Text3.Text, 1, True, False, True, False, False, False
-            End If
+            ws.SendAdvanced Text3.Text, 1, True, False, True, False, False, False
 
             AddListItem List1, "Myself: " & Text3
             Text3 = ""
-            
         End If
 
     Else
@@ -592,9 +484,10 @@ Private Sub Form_Load()
     frmLogs.Show
     Token = GetSetting("VB6 Discord", "Authorization", "Token", "")
     SetFont Me
+    Me.Caption = App.Title
     wbChat.Navigate "about:blank"
-    wbChat.Document.parentWindow.execScript "window.createMessage = function createMessage(sender, content) {}"
-    wbChat.Document.parentWindow.execScript "window.onload = function() { document.body.style.backgroundColor = 'rgb(41, 57, 69)'; document.body.innerHTML = '<div id=message-container></div>'; }"
+    wbChat.Document.parentWindow.execScript "window.createMessage = function createMessage(sender, content) { document.getElementById('message-container').innerHTML += '<table><tr><td rowspan=2><img /></td><td>' + sender.username + '</td></tr><tr><td>' + content + '</td></tr></table>'; }"
+    wbChat.Document.parentWindow.execScript "window.onload = function() { document.body.style.backgroundColor = 'rgb(41, 57, 69)'; document.body.style.color = 'white'; document.body.style.fontFamily = '돋움,Dotum'; document.body.innerHTML = '<div id=message-container></div>'; }"
 End Sub
 
 Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
@@ -688,6 +581,47 @@ Private Sub timHeartbeat_Timer()
     End If
 End Sub
 
+Private Sub tvGuilds_Click()
+    On Error Resume Next
+    Dim Channel As Dictionary
+    Dim msg
+    If Not channels.Exists(tvGuilds.SelectedItem.key) Then Exit Sub
+    Set Channel = channels(tvGuilds.SelectedItem.key)
+    If Channel("type") <> 0 Then Exit Sub
+    wbChat.Document.parentWindow.execScript "document.getElementById('message-container').innerHTML = '';"
+    If Channel("messages").Count = 0 Then
+        Dim Http As New WinHttp.WinHttpRequest
+        EnableTLS Http
+        
+        Http.Open "GET", "https://discord.com/api/v10/channels/" & Channel("id") & "/messages", True
+        Http.SetRequestHeader "Content-Type", "application/json"
+        Http.SetRequestHeader "Authorization", Token
+        Http.SetRequestHeader "User-Agent", "My XML App V1.0"
+        Http.Send
+        Http.WaitForResponse 60
+        
+        If Http.Status >= 400 Then
+            MsgBox "메시지를 불러올 수 없습니다.", 16, "오류"
+            Exit Sub
+        End If
+        
+        Dim p As Object
+        Set p = JSON.parse("{""messages"":" & CStr(Http.ResponseText) & "}")
+        For Each msg In p("messages")
+            Channel("messages").Add CStr(msg("id")), msg
+        Next msg
+    End If
+    
+    Log "메시지 " & Channel("messages").Count & "개가 있습니다"
+    
+    For Each msg In Channel("messages").Items
+        wbChat.Document.parentWindow.execScript "createMessage(" & JSON.toString(msg("author")) & ", """ & EscapeHTML(Escape(msg("content"))) & """);"
+        If Not CStr(users.Exists(msg("author")("id"))) And Not IsNull(msg("webhook_id")) Then
+            users.Add CStr(msg("author")("id")), msg("author")
+        End If
+    Next msg
+End Sub
+
 '==================================================================
 'websocket events
 '==================================================================
@@ -722,14 +656,14 @@ End Sub
 
 
 
-Private Sub ws_OnMessage(ByVal Msg As Variant, ByVal OpCode As WebsocketOpCode)
+Private Sub ws_OnMessage(ByVal msg As Variant, ByVal OpCode As WebsocketOpCode)
     'if coinbase demo not active proceed as normal
     Dim evt As Dictionary
     Select Case OpCode
         Case opText     'normal text string
-            AddListItem List1, "Server: " & Msg
+            AddListItem List1, "Server: " & msg
             
-            Set evt = JSON.parse(CStr(Msg))
+            Set evt = JSON.parse(CStr(msg))
             Select Case CInt(evt("op"))
                 Case 10 'hello
                     Log "게이트웨이 연결 완료!"
@@ -742,14 +676,14 @@ Private Sub ws_OnMessage(ByVal Msg As Variant, ByVal OpCode As WebsocketOpCode)
                     
                     If Resuming Then
                         Log "세션을 다시 시작합니다"
-                        ws.SendAdvanced "{""op"":6,""d"":{""token"":""" & Token & """,""session_id"":""" & sessionID & """,""seq"":" & sequence & "}}", 1, True, False, True, False, False, False
+                        ws.Send "{""op"":6,""d"":{""token"":""" & Token & """,""session_id"":""" & sessionID & """,""seq"":" & sequence & "}}"
                         AddListItem List1, "{""op"":6,""d"":{""token"":""" & Token & """,""session_id"":""" & sessionID & """,""seq"":" & sequence & "}}"
                         Resuming = False
                     Else
                         frmConnectionProgress.lblStatus.Caption = "로그인하는 중..."
                         Log "계정 인증 중..."
-                        ws.SendAdvanced "{""op"":2,""d"":{""token"":""" & Token & """,""properties"":{""os"":""Android"",""browser"":""Discord Android"",""device"":""""},""compress"":false,""large_threshold"":250,""presence"":{""activities"":[],""status"":""online"",""afk"":false},""intents"":16383}}", 1, True, False, True, False, False, False
-                        AddListItem List1, "{""op"":2,""d"":{""token"":""" & Token & """,""properties"":{""os"":""Android"",""browser"":""Discord Android"",""device"":""""},""compress"":false,""large_threshold"":250,""presence"":{""activities"":[],""status"":""online"",""afk"":false},""intents"":16383}}"
+                        ws.Send "{""op"":2,""d"":{""token"":""" & Token & """,""properties"":{""os"":""Android"",""browser"":""Discord Android"",""device"":""""},""compress"":false,""large_threshold"":250,""presence"":{""activities"":[],""status"":""online"",""afk"":false},""intents"":65535}}"
+                        AddListItem List1, "{""op"":2,""d"":{""token"":""" & Token & """,""properties"":{""os"":""Android"",""browser"":""Discord Android"",""device"":""""},""compress"":false,""large_threshold"":250,""presence"":{""activities"":[],""status"":""online"",""afk"":false},""intents"":65535}}"
                     End If
                 Case 7 'reconnect
                     Log "게이트웨이에 다시 연결합니다..."
@@ -760,15 +694,16 @@ Private Sub ws_OnMessage(ByVal Msg As Variant, ByVal OpCode As WebsocketOpCode)
                         Case "READY"
                             frmConnectionProgress.lblStatus.Caption = "연결되었습니다."
                             Pause 1
-                            frmConnectionProgress.Hide
+                            Unload frmConnectionProgress
                             Log "계정 인증 완료!"
                             sessionID = evt("d")("session_id")
                             ResumeURL = evt("d")("resume_gateway_url")
+                            Me.Caption = evt("d")("user")("username") & " - " & App.Title
                             
                             '서버 목록 불러오기
-                            For guild = 1 To evt("d")("guilds").Count
-                                tvGuilds.Nodes.Add , , CStr(evt("d")("guilds")(guild)("id")), "(불러오는 중...)"
-                            Next guild
+                            For Guild = 1 To evt("d")("guilds").Count
+                                tvGuilds.Nodes.Add , , CStr(evt("d")("guilds")(Guild)("id")), "(불러오는 중...)"
+                            Next Guild
                         Case "GUILD_CREATE"
                             Log CStr(evt("d")("name")) & " 서버에 대한 정보를 받았습니다."
                             tvGuilds.Nodes(CStr(evt("d")("id"))).Text = CStr(evt("d")("name"))
@@ -792,13 +727,22 @@ Private Sub ws_OnMessage(ByVal Msg As Variant, ByVal OpCode As WebsocketOpCode)
                                     tvGuilds.Nodes.Add CStr(guildChannels(i)("parent_id")), tvwChild, CStr(guildChannels(i)("id")), guildChannels(i)("name")
                                 End If
                             Next i
+                        Case "MESSAGE_CREATE"
+                            Log "새로운 메시지가 왔습니다."
+                            Dim message As Dictionary
+                            Set message = evt("d")
+                            channels(CStr(message("channel_id")))("messages").Add CStr(message("id")), message
+                            wbChat.Document.parentWindow.execScript "createMessage(" & JSON.toString(message("author")) & ", """ & EscapeHTML(Escape(message("content"))) & """);"
+                            If Not users.Exists(CStr(message("author")("id"))) And Not IsNull(message("webhook_id")) Then
+                                users.Add CStr(message("author")("id")), message("author")
+                            End If
                     End Select
                 Case 11
                     Log "하트비트가 정상적으로 전송되었습니다"
             End Select
         Case opBinary  'handle binary data
 
-            If VarType(Msg) = vbArray + vbByte Then
+            If VarType(msg) = vbArray + vbByte Then
                 AddListItem List1, "Server: Binary data recieved"
                 'do something with binary data
             Else
